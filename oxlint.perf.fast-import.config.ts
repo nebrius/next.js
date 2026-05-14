@@ -12,6 +12,7 @@ export default defineConfig({
     'import-integrity': {
       packageRootDir: import.meta.dirname,
       debugLogging,
+      ignorePatterns: ['test/e2e/typescript/extension-order/js-first.ts'],
     },
   },
   // Cosmetic: keeps the oxlint file walk symmetric with

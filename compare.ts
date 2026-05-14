@@ -5,6 +5,7 @@ import { performance } from 'node:perf_hooks';
 
 const ROOT_DIR = import.meta.dirname;
 const RUNS_PER_CONFIG = 5;
+const SKIP_ESLINT = process.env.SKIP_ESLINT === '1';
 
 function formatDuration(duration: number) {
   const roundedDuration = Math.round(duration * 10) / 10;
@@ -220,6 +221,14 @@ const oxlintFastImportResult = await runOxlint({
   config: 'oxlint.perf.fast-import.config.ts'
 });
 
+if (SKIP_ESLINT) {
+  console.log(`
+                     | Count      | Time       |
+---------------------|------------|------------|
+Oxlint builtin       | ${formatCount(oxlintBuiltinResult.count - oxlintBaselineResult.count)} | ${formatDuration(oxlintBuiltinResult.duration - oxlintBaselineResult.duration)} |
+Fast import (Oxlint) | ${formatCount(oxlintFastImportResult.count - oxlintBaselineResult.count)} | ${formatDuration(oxlintFastImportResult.duration - oxlintBaselineResult.duration)} |`);
+  process.exit(0);
+}
 
 console.log(`Running ESLint baseline`);
 const eslintBaselineResult = await runESLint({
